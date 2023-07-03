@@ -15,12 +15,35 @@
     <div id = "map" style="width: 50em; height: 30em;"></div>
 </body>
 <script>
-    $(document).ready(function(){
+    $(document).ready(async function(){
+        let xy = await getLocation();
+        //alert("위도"+xy.lat);
         var mapDiv = document.getElementById('map');
 
         var map = new naver.maps.Map(mapDiv);
     });
+    async function getLocation(){
+        let xy = new Object();
+        if(navigator.geolocation){
 
+            let promise = new Promise((resolve, rejected)=>{
+                navigator.geolocation.getCurrentPosition((position)=>{
+                    resolve(position);
+                });
+            });
+            let position = await promise;
+            //navigator.geolocation.getCurrentPosition(function(position){
+                //position.coords.latitude 위도
+                //position.coords.longitude 경도
+
+            xy.lat = position.coords.latitude;
+            xy.lng = position.coords.longitude;
+            alert("위도"+xy.lat);
+            alert("경도"+xy.lng);
+            }/*)*/;
+        //}
+        return xy;
+    }
     
 </script>
 </html>
