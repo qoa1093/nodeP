@@ -21,6 +21,28 @@
         var mapDiv = document.getElementById('map');
 
         var map = new naver.maps.Map(mapDiv);
+
+        $.ajax({
+            url:"/pharmach_list",
+            type:"GET",
+            cache: false,
+            dataType : "json",
+            data : {"Q0":"서울특별시",
+                    "Q1":"강남구",
+                    "QT":"",
+                    "QN":"",
+                    "ORD":"",
+                    "pageNo":"1",
+                    "numOfRows":"1000"},
+            success: function(data){
+                //data는 위의 데이터와 다른 것
+                console.log(data);
+
+            },
+            error:function(request, status, error){
+
+            }
+        });
     });
     async function getLocation(){
         let xy = new Object();
@@ -38,8 +60,8 @@
 
             xy.lat = position.coords.latitude;
             xy.lng = position.coords.longitude;
-            alert("위도"+xy.lat);
-            alert("경도"+xy.lng);
+            //alert("위도"+xy.lat);
+            //alert("경도"+xy.lng);
             }/*)*/;
         //}
         return xy;
