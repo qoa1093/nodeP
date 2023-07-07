@@ -44,14 +44,14 @@
             
            }
            console.log(sido + " " + gugun);
-        });
-        $.ajax({
+
+           $.ajax({
             url:"/pharmach_list",
             type:"GET",
             cache: false,
             dataType : "json",
             data : {"Q0":sido,
-                    "Q1":"강남구",
+                    "Q1":gugun,
                     "QT":"",
                     "QN":"",
                     "ORD":"",
@@ -69,11 +69,81 @@
                     
                 }
                 var map = new naver.maps.Map(mapDiv, mapOptions);
+                //item이 복수기 때문에 foreach문을 function을 써서 사용하기
+                data.items.item.forEach(function(it, index){
+                    let dutyName = it.dutyName; //약국이름
+                    let dutyAddr = it.dutyAddr;//약국주소
+                    let dutyTel1 = it.dutyTel1;//전화번호
+
+                    let dutyTime = "";
+                    if(it.dutyTime1s && it.dutyTime1c){
+                        dutyTime += "월요일 : "+ it.dutyTime1s +"~"+it.dutyTime1c +"<br>";
+                    }
+                    if(it.dutyTime2s && it.dutyTime2c){
+                        dutyTime += "화요일 : "+it.dutyTime2s +"~"+ it.dutyTime2c + "<br>";
+                    }
+                    if(it.dutyTime3s && it.dutyTime3c){
+                        dutyTime += "수요일 : "+ it.dutyTime3s +"~"+it.dutyTime3c + "<br>";
+                    }
+                    if(it.dutyTime4s && it.dutyTime4c){
+                        dutyTime += "목요일 : "+ it.dutyTime4s +"~"+it.dutyTime4c + "<br>";
+                    }
+                    if(it.dutyTime5s && it.dutyTime5c){
+                        dutyTime += "금요일 : "+ it.dutyTime5s +"~"+it.dutyTime5c + "<br>";
+                    }
+                    if(it.dutyTime6s && it.dutyTime6c){
+                        dutyTime += "토요일 : "+ it.dutyTime6s +"~"+it.dutyTime6c + "<br>";
+                    }
+                    if(it.dutyTime7s && it.dutyTime7c){
+                        dutyTime += "일요일 : "+ it.dutyTime7s +"~"+it.dutyTime7c + "<br>";
+                    }
+                    if(it.dutyTime8s && it.dutyTime8c){
+                        dutyTime += "공휴일 : "+ it.dutyTime8s +"~"+it.dutyTime8c + "<br>";
+                    }
+                    //네이버 지도 마커
+                    let pharmacy_location = new naver.maps.LatLng(it.wgs84Lat, it.wgs84Lon);
+                   let marker = new naver.maps.Marker({
+                        map: map,
+                        position: pharmacy_location
+                    });
+
+                var contentString = [
+                        '<div class="iw_inner">',
+                        '   <h3>'+dutyName+'</h3>',
+                        '   <p>'+dutyAddr+'<br />',
+                        '       '+dutyTel1+'<br />',
+                        '       '+ dutyTime,
+                        '   </p>',
+                        '</div>'
+                    ].join('');
+
+                var infowindow = new naver.maps.InfoWindow({
+                    content: contentString,
+                    maxWidth: 440,
+                    backgroundColor: "#eee",
+                    borderColor: "#2db400",
+                    borderWidth: 5,
+                    anchorSize: new naver.maps.Size(30, 30),
+                    anchorSkew: true,
+                    anchorColor: "#eee",
+                    pixelOffset: new naver.maps.Point(20, -20)
+                });
+
+                naver.maps.Event.addListener(marker, "click", function(e) {
+                    if (infowindow.getMap()) {
+                        infowindow.close();
+                    } else {
+                        infowindow.open(map, marker);
+                    }
+                });
+                });
             },
             error:function(request, status, error){
 
             }
         });
+        });
+        
     });
     async function getLocation(){
         let xy = new Object();
